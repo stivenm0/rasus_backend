@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('description', 150);
             $table->string('slug')->unique();
-            $table->boolean('public')->default(false);
             $table->timestamps();
         });
     }

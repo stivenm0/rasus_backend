@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Space;
 use App\Http\Requests\StoreSpaceRequest;
 use App\Http\Requests\UpdateSpaceRequest;
+use App\Http\Resources\SpaceResource;
+use App\Http\Responses\ApiResponse;
 
 class SpaceController extends Controller
 {
@@ -13,7 +15,8 @@ class SpaceController extends Controller
      */
     public function index()
     {
-        //
+        $spaces = Space::paginate(5);
+        return SpaceResource::collection($spaces);
     }
 
     /**
@@ -45,6 +48,10 @@ class SpaceController extends Controller
      */
     public function destroy(Space $space)
     {
-        //
+        if($space){
+            $space->delete();
+            return ApiResponse::success();
+        }
+        return ApiResponse::error();
     }
 }

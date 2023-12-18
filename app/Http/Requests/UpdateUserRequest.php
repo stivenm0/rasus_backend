@@ -3,15 +3,17 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class UpdateLinkRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,13 @@ class UpdateLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=> 'required|string|min:6|max:80',
+            'nickname'=> 'required|string|min:6|max:80',
+            'email'=> 'required|string|email|'.
+            Rule::unique('users')->ignore(Auth::user()->id, 'id')
+            .'|min:6|max:100',
+            'photo'=> 'sometimes|image|mimes:jpeg,png,jpg,gif|max:5000'
+
         ];
     }
 }
