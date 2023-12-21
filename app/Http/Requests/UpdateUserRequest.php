@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests;
 
+use app\traits\ResponseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
+
+    use ResponseRequest;
+
     /**
      * Determine if the user is authorized to make this request.
      */

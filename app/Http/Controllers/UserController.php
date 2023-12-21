@@ -9,18 +9,21 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    
 
     public function login(Request $credentials)
     {
         if(Auth::attempt($credentials->all())){
             return ApiResponse::success(
                 data: [
-                    'user' => Auth::user(),
-                    'token'=> Auth::user()->createToken('client')->painTextToken
+                    'user' => new UserResource(Auth::user()),
+                    'token'=> Auth::user()->createToken('client')->plainTextToken
                 ]
             );
         }
@@ -50,7 +53,7 @@ class UserController extends Controller
         return ApiResponse::success(
             statusCode: 201, 
             data: [
-                'user' => $user,
+                'user' => new UserResource(Auth::user()),
                 'token' => $user->createToken('client')->plainTextToken
             ]);
     }
@@ -77,9 +80,23 @@ class UserController extends Controller
             'name'=> $request->name,
             'nickname'=> $this->makeNick($request->name),
             'email'=> $request->email,
+            'photo'=> $this->savePhoto($request->photo)
         ]);
 
         return ApiResponse::success(data: $user);
+    }
+
+
+    public function updatePassword(Request $request)
+    {
+        $validation = Validator::make($request, [
+            'password' => 'required|string|min:8|max:30'
+        ]);
+
+
+        Auth::user()->update([
+            'password' => Hash::make($request->password)
+        ]);
     }
 
     /**
@@ -91,6 +108,9 @@ class UserController extends Controller
         return ApiResponse::success();
     }
 
+
+
+
     public function makeNick(string $name)
     {
         $nickname = Str::slug(substr($name, 0, 8));
@@ -99,6 +119,23 @@ class UserController extends Controller
             $nickname .= random_int(100, 999);
         }
         return $nickname;
+    }
+
+    public function savePhoto($photo)
+    {
+        $user = Auth::user();
+
+        if(!$photo){ return $user->photo; }
+        
+        if($user->photo){
+            Storage::disk('photos')->delete($user->photo);
+        }
+
+        $nameImage = $user->nickname . now();
+
+        Storage::disk('photos')->put($nameImage, $photo);
+
+        return $nameImage;
     }
 
 }

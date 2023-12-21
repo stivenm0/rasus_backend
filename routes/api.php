@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\LinkController;
 use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\UserController;
-use App\Models\Link;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,10 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/login', [UserController::class, 'login']);
 
-Route::post('/users', [UserController::class, 'login']);
-
-
+Route::post('/users', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/logout', [UserController::class, 'logout']);
@@ -36,8 +35,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/users/{nickname}', [UserController::class, 'show']);
 
     // Route::get('/photo/{name}', [UserController::class, 'photo']);
+
+    Route::apiResource('/spaces', SpaceController::class);
+
+    Route::apiResource('/links', LinkController::class)->except('index');
+
 });
 
-Route::apiResource('/spaces', SpaceController::class);
 
-Route::apiResource('/links', Link::class);
