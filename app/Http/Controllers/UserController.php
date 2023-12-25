@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -22,13 +23,11 @@ class UserController extends Controller
         if(Auth::attempt($credentials->all())){
             return ApiResponse::success(
                 data: [
-                    'user' => new UserResource(Auth::user()),
                     'token'=> Auth::user()->createToken('client')->plainTextToken
                 ]
             );
         }
         return ApiResponse::error('Credenciales Incorrectas', 402);
-
     }
 
     public function logout()
@@ -53,7 +52,6 @@ class UserController extends Controller
         return ApiResponse::success(
             statusCode: 201, 
             data: [
-                'user' => new UserResource(Auth::user()),
                 'token' => $user->createToken('client')->plainTextToken
             ]);
     }
@@ -61,14 +59,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $nickname)
+    public function show()
     {
-        $user = User::where('nickname',$nickname)->first();
-
-        if($user){
-            return ApiResponse::success(data: $user);
-        }
-        return 'Not found';
+        return ApiResponse::success(data: new UserResource(Auth::user()) );
     }
 
     /**
@@ -76,14 +69,14 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $user = Auth::user()->update([
-            'name'=> $request->name,
-            'nickname'=> $this->makeNick($request->name),
-            'email'=> $request->email,
-            'photo'=> $this->savePhoto($request->photo)
-        ]);
-
-        return ApiResponse::success(data: $user);
+        // $user = Auth::user()->update([
+        //     'name'=> $request->name,
+        //     'nickname'=> $this->makeNick($request->name),
+        //     'email'=> $request->email,
+        //     'photo'=> $this->savePhoto($request->photo)
+        // ]);
+        return ApiResponse::success(data: $_FILES);
+    
     }
 
 
@@ -107,9 +100,6 @@ class UserController extends Controller
         Auth::user()->delete();
         return ApiResponse::success();
     }
-
-
-
 
     public function makeNick(string $name)
     {

@@ -36,10 +36,14 @@ class SpaceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Space $space)
+    public function show(string $slug)
     {
-        $links = $space->links()->paginate(10);
-        return LinkResource::collection($links);
+        $space = Space::where('slug', $slug)->first();
+        if($space){
+            $links = $space->links()->paginate(10);
+            return ApiResponse::success(data: LinkResource::collection($links));
+        }
+        
     }
 
     /**
@@ -47,7 +51,6 @@ class SpaceController extends Controller
      */
     public function update(StoreSpaceRequest $request, Space $space)
     {
-
         $space->update([
             'name'=> $request->name,
             'description'=> $request->description,

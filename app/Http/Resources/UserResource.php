@@ -19,7 +19,6 @@ class UserResource extends JsonResource
             'nickname'=> $this->nickname,
             'photo'=> $this->photo,
             'email'=> $this->email,
-            'notification'=> $this->notifications,
         ];
     }
 }

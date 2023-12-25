@@ -14,12 +14,13 @@ class LinkController extends Controller
      */
     public function store(StoreLinkRequest $request)
     {
-        $user = Link::create([
+        Link::create([
+            'space_id'=> $request->space_id,
             'name'=> $request->name,
             'link'=> $request->link,
             'short'=> $this->makeShort()
         ]);
-        return ApiResponse::success(statusCode:201, data: $user);
+        return ApiResponse::success(statusCode:201);
     }
 
     /**

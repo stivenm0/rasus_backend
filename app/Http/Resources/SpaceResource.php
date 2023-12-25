@@ -19,6 +19,7 @@ class SpaceResource extends JsonResource
             'name'=> $this->name,
             'description'=> $this->description,
             'slug'=> $this->slug,
+            'count_links'=> $this->links()->count(),
         ];
     }
 }

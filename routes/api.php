@@ -21,6 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+Route::get('/', function(){
+    return response()->json('hola');
+});
+
 Route::post('/login', [UserController::class, 'login']);
 
 Route::post('/users', [UserController::class, 'store']);
@@ -28,17 +33,17 @@ Route::post('/users', [UserController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/logout', [UserController::class, 'logout']);
 
-    Route::put('/users', [UserController::class, 'update']);
+    // Route::post('/users', [UserController::class, 'update']);
 
     Route::delete('/users', [UserController::class, 'destroy']);
 
-    Route::get('/users/{nickname}', [UserController::class, 'show']);
-
-    // Route::get('/photo/{name}', [UserController::class, 'photo']);
+    Route::get('/users/me', [UserController::class, 'show']);
 
     Route::apiResource('/spaces', SpaceController::class);
 
     Route::apiResource('/links', LinkController::class)->except('index');
+
+    // Route::get('/photo/{name}', [UserController::class, 'photo']);
 
 });
 

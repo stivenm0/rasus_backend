@@ -22,7 +22,8 @@ class StoreLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=> 'required|string|min:5|max:40',
+            'space_id'=> 'required',
+            'name'=> 'required|string|max:40',
             'link'=> 'required|url',
         ];
     }

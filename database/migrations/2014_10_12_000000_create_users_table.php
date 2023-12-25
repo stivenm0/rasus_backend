@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('nickname', 50);
             $table->string('photo')->nullable();
-            $table->boolean('notifications')->default(true);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
