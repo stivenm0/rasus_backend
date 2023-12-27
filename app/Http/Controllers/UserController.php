@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Responses\ApiResponse;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -67,29 +68,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request)
     {
-        // $user = Auth::user()->update([
-        //     'name'=> $request->name,
-        //     'nickname'=> $this->makeNick($request->name),
-        //     'email'=> $request->email,
-        //     'photo'=> $this->savePhoto($request->photo)
-        // ]);
-        return ApiResponse::success(data: $_FILES);
-    
+        Auth::user()->update([
+            'name'=> $request->name,
+            'nickname'=> $this->makeNick($request->nickname),
+            'email'=> $request->email,
+            'photo'=> $this->savePhoto($request->photo)
+        ]);
+        return ApiResponse::success();
     }
 
-
-    public function updatePassword(Request $request)
-    {
-        $validation = Validator::make($request, [
-            'password' => 'required|string|min:8|max:30'
-        ]);
-
-
-        Auth::user()->update([
-            'password' => Hash::make($request->password)
-        ]);
+    public function photo(string $name){
+        return Storage::disk('photos')->get($name);
     }
 
     /**
@@ -120,10 +111,10 @@ class UserController extends Controller
         if($user->photo){
             Storage::disk('photos')->delete($user->photo);
         }
-
-        $nameImage = $user->nickname . now();
-
-        Storage::disk('photos')->put($nameImage, $photo);
+        
+        $nameImage =  time(). $photo->getClientOriginalName();
+        
+        Storage::disk('photos')->put($nameImage, File::get($photo));
 
         return $nameImage;
     }

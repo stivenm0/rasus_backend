@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class LinkController extends Controller
 {
+
     /**
      * Store a newly created resource in storage.
      */

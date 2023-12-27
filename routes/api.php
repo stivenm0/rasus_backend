@@ -31,9 +31,9 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/users', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/logout', [UserController::class, 'logout']);
+    Route::post('/logout', [UserController::class, 'logout']);
 
-    // Route::post('/users', [UserController::class, 'update']);
+    Route::put('/users', [UserController::class, 'update']);
 
     Route::delete('/users', [UserController::class, 'destroy']);
 
@@ -41,10 +41,12 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::apiResource('/spaces', SpaceController::class);
 
-    Route::apiResource('/links', LinkController::class)->except('index');
-
-    // Route::get('/photo/{name}', [UserController::class, 'photo']);
+    Route::apiResource('/links', LinkController::class)->except(['index', 'show']);
 
 });
+
+Route::get('/links/{short}', [LinkController::class, 'show']);
+
+Route::get('/photo/{name}', [UserController::class, 'photo']);
 
 

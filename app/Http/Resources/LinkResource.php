@@ -15,6 +15,7 @@ class LinkResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'=>$this->id,
             'name'=> $this->name,
             'link'=> $this->link,
             'short'=> $this->short,

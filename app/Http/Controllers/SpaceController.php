@@ -41,7 +41,10 @@ class SpaceController extends Controller
         $space = Space::where('slug', $slug)->first();
         if($space){
             $links = $space->links()->paginate(10);
-            return ApiResponse::success(data: LinkResource::collection($links));
+            return ApiResponse::success(data: [
+                'space' =>$space, 
+                'links' =>LinkResource::collection( $links)
+            ]);
         }
         
     }

@@ -22,8 +22,8 @@ class StoreSpaceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=> 'required|string|min:5|max:40',
-            'description'=> 'nullable|string|max:150',
+            'name'=> 'required|string|max:40',
+            'description'=> 'required|string|max:150',
         ];
     }
 }
