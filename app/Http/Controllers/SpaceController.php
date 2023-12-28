@@ -7,13 +7,15 @@ use App\Http\Requests\StoreSpaceRequest;
 use App\Http\Resources\LinkResource;
 use App\Http\Resources\SpaceResource;
 use App\Http\Responses\ApiResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SpaceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        return $request;
       $spaces = Auth::user()->spaces()->paginate(10);  
       return SpaceResource::collection($spaces);
     }

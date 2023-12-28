@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Link;
 use App\Http\Requests\StoreLinkRequest;
 use App\Http\Responses\ApiResponse;
+use App\Notifications\ClicksNotification;
 use Illuminate\Support\Str;
 
 class LinkController extends Controller
@@ -29,10 +30,16 @@ class LinkController extends Controller
      */
     public function show(string $short)
     {
-        $link = Link::where('short',$short)->value('link');
-
+        $link = Link::where('short',$short)->first();
+        
         if($link){
-            return ApiResponse::success(data: $link);
+            $link->clicks += 1;
+            $link->save();
+            if(in_array($link->clicks, [1, 5, 10, 100, 100])){
+                $link->space->user->notify(new ClicksNotification($link));
+            }
+
+            return ApiResponse::success(data: $link->link);
         }
         return ApiResponse::error(statusCode: 404);
     }

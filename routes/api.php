@@ -22,31 +22,31 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/', function(){
-    return response()->json('hola');
-});
 
 Route::post('/login', [UserController::class, 'login']);
 
+Route::post('/logout', [UserController::class, 'logout'])->middleware(['auth:sanctum']);
+
 Route::post('/users', [UserController::class, 'store']);
 
-Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/logout', [UserController::class, 'logout']);
 
-    Route::put('/users', [UserController::class, 'update']);
+Route::prefix('v1')->group(function(){ 
+    
+    Route::middleware('auth:sanctum')->group(function(){
 
-    Route::delete('/users', [UserController::class, 'destroy']);
+        Route::put('/users', [UserController::class, 'update']);
 
-    Route::get('/users/me', [UserController::class, 'show']);
+        Route::delete('/users', [UserController::class, 'destroy']);
 
-    Route::apiResource('/spaces', SpaceController::class);
+        Route::get('/users/me', [UserController::class, 'show']);
 
-    Route::apiResource('/links', LinkController::class)->except(['index', 'show']);
+        Route::apiResource('/spaces', SpaceController::class);
 
+        Route::apiResource('/links', LinkController::class)->except(['index', 'show']);
+    });
+
+    Route::get('/links/{short}', [LinkController::class, 'show']);
+
+    Route::get('/photo/{name}', [UserController::class, 'photo']);
 });
-
-Route::get('/links/{short}', [LinkController::class, 'show']);
-
-Route::get('/photo/{name}', [UserController::class, 'photo']);
-
 
