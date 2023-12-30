@@ -15,7 +15,6 @@ class SpaceController extends Controller
 {
     public function index(Request $request)
     {
-        return $request;
       $spaces = Auth::user()->spaces()->paginate(10);  
       return SpaceResource::collection($spaces);
     }
@@ -42,7 +41,7 @@ class SpaceController extends Controller
     {
         $space = Space::where('slug', $slug)->first();
         if($space){
-            $links = $space->links()->paginate(10);
+            $links = $space->links()->orderBy('id', 'desc')->get();
             return ApiResponse::success(data: [
                 'space' =>$space, 
                 'links' =>LinkResource::collection( $links)

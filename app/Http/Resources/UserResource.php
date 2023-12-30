@@ -19,7 +19,7 @@ class UserResource extends JsonResource
         return [
             'name'=> $this->name,
             'nickname'=> $this->nickname,
-            'photo'=> URL::to("/api/photo/". $photo),
+            'photo'=> URL::to("/api/v1/photo/". $photo),
             'email'=> $this->email,
         ];
     }

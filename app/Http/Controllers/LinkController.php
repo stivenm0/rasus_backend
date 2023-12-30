@@ -50,6 +50,7 @@ class LinkController extends Controller
     public function update(StoreLinkRequest $request, Link $link)
     {
         $link->update($request->all());
+        return ApiResponse::success();
     }
 
     /**

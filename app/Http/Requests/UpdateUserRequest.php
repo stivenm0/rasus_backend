@@ -28,12 +28,12 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'name'=> 'required|string|max:80',
-            // 'nickname'=> 'required|string|max:80',
-            // 'email'=> 'required|string|email|'.
-            // Rule::unique('users')->ignore(Auth::user()->id, 'id')
-            // .'|max:100',
-            // 'photo'=> 'sometimes|image|mimes:jpeg,png,jpg,gif|max:5000'
+            'name'=> 'required|string|max:80',
+            'nickname'=> 'required|string|max:80',
+            'email'=> 'required|string|email|'.
+            Rule::unique('users')->ignore(Auth::user()->id, 'id')
+            .'|max:100',
+            'photo'=> 'sometimes|image|mimes:jpeg,png,jpg,gif|max:5000'
 
         ];
     }
