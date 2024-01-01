@@ -22,12 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-
 Route::post('/login', [UserController::class, 'login']);
 
 Route::post('/logout', [UserController::class, 'logout'])->middleware(['auth:sanctum']);
 
+Route::get('/notifications', [UserController::class, 'notifications'])->middleware(['auth:sanctum']);
+
+Route::delete('/notifications', [UserController::class, 'notificationsDelete'])->middleware(['auth:sanctum']);
+
 Route::post('/users', [UserController::class, 'store']);
+
 
 
 Route::prefix('v1')->group(function(){ 

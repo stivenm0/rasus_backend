@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ClickEvent;
 use App\Models\Link;
 use App\Http\Requests\StoreLinkRequest;
 use App\Http\Responses\ApiResponse;
@@ -31,14 +32,11 @@ class LinkController extends Controller
     public function show(string $short)
     {
         $link = Link::where('short',$short)->first();
-        
         if($link){
             $link->clicks += 1;
             $link->save();
-            if(in_array($link->clicks, [1, 5, 10, 100, 100])){
-                $link->space->user->notify(new ClicksNotification($link));
-            }
 
+            event(new ClickEvent($link));
             return ApiResponse::success(data: $link->link);
         }
         return ApiResponse::error(statusCode: 404);
@@ -49,6 +47,7 @@ class LinkController extends Controller
      */
     public function update(StoreLinkRequest $request, Link $link)
     {
+        $this->authorize('author', $link);
         $link->update($request->all());
         return ApiResponse::success();
     }
@@ -58,11 +57,9 @@ class LinkController extends Controller
      */
     public function destroy(Link $link)
     {
-        if($link){
-            $link->delete();
-            return ApiResponse::success();
-        }
-        return ApiResponse::error(statusCode: 404);
+        $this->authorize('author', $link);
+        $link->delete();
+        return ApiResponse::success();
     }
 
     public function makeShort()
@@ -77,7 +74,6 @@ class LinkController extends Controller
         while(Link::where('short',$shortUrl)->exists()){
             $shortUrl .= $characters[rand(0, strlen($characters) - 1)];
         }
-        
         return $shortUrl;
     }
 }

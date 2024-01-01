@@ -15,10 +15,9 @@ class SpaceController extends Controller
 {
     public function index(Request $request)
     {
-      $spaces = Auth::user()->spaces()->paginate(10);  
+      $spaces = Auth::user()->spaces()->get();  
       return SpaceResource::collection($spaces);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -41,13 +40,13 @@ class SpaceController extends Controller
     {
         $space = Space::where('slug', $slug)->first();
         if($space){
+            $this->authorize('author', $space);
             $links = $space->links()->orderBy('id', 'desc')->get();
             return ApiResponse::success(data: [
                 'space' =>$space, 
                 'links' =>LinkResource::collection( $links)
             ]);
         }
-        
     }
 
     /**
@@ -55,6 +54,7 @@ class SpaceController extends Controller
      */
     public function update(StoreSpaceRequest $request, Space $space)
     {
+        $this->authorize('author', $space);
         $space->update([
             'name'=> $request->name,
             'description'=> $request->description,
@@ -68,6 +68,7 @@ class SpaceController extends Controller
      */
     public function destroy(Space $space)
     {
+        $this->authorize('author', $space);
         $space->delete();
         return ApiResponse::success();
     }

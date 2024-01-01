@@ -33,7 +33,7 @@ class UpdateUserRequest extends FormRequest
             'email'=> 'required|string|email|'.
             Rule::unique('users')->ignore(Auth::user()->id, 'id')
             .'|max:100',
-            'photo'=> 'sometimes|image|mimes:jpeg,png,jpg,gif|max:5000'
+            'photo'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:5000'
 
         ];
     }
